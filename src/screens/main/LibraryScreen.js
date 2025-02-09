@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, View, StyleSheet, Alert, FlatList } from 'react-native';
-import { Card, Text } from '@rneui/themed';
+import { Card } from '@rneui/themed';
 import { useBooksData } from '../../hooks/useBooksData';
 
 export default function LibraryScreen() {
@@ -20,8 +20,11 @@ export default function LibraryScreen() {
 
   const renderItem = ({item}) => {
     return (
-      <Card>
+      <Card containerStyle={styles.card}>
         <Card.Title>{item.title}</Card.Title>
+        <Card.Image
+          style={styles.cardImage}
+          source={{uri: item.imageLinks.thumbnail}}/>
       </Card>
     );
   };
@@ -29,6 +32,10 @@ export default function LibraryScreen() {
   return (
     <View style={styles.container}>
       <FlatList
+        numColumns={2}
+        horizontal={false}
+        style={styles.booksContainer}
+        columnWrapperStyle={styles.row}
         data={books}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}/>
@@ -39,10 +46,29 @@ export default function LibraryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center'
+  },
+  booksContainer: {
+    paddingTop: 8,
+  },
+  row: {
+    flex: 1,
+    justifyContent: 'space-between',
+    marginHorizontal: 16,
+    marginBottom: 8,
+  },
+  card: {
+    maxWidth: '48%',
+    flexGrow: 1,
+    flexShrink: 0,
+    flexBasis: 'auto',
+    margin: 0,
+    borderRadius: 8
+  },
+  cardImage: {
+    resizeMode: 'stretch',
   },
 });
