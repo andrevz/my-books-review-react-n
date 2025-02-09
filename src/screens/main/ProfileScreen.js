@@ -1,12 +1,12 @@
 import React from 'react';
 import { Alert, View, StyleSheet } from 'react-native';
 import { Text, Button } from '@rneui/themed';
-import { signOutUser } from "../../services/authService";
+import * as authService from "../../services/authService";
 
 export default function ProfileScreen() {
   async function signOut() {
     try {
-      await signOutUser();
+      await authService.signOutUser();
     } catch (error) {
       Alert.alert("Sign Out", error.message);
     }
