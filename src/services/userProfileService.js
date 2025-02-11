@@ -16,6 +16,20 @@ export async function getUserProfile() {
   return userProfile;
 }
 
+export async function toggleUserProfileFavoriteBook(userProfile, bookId) {
+  let favorites = userProfile.favorites || [];
+
+  if (favorites.some(x => x === bookId))
+    favorites = favorites.filter(x => x !== bookId);
+  else
+    favorites.push(bookId);
+
+  updateUserProfile({
+    ...userProfile,
+    favorites,
+  });
+}
+
 export async function updateUserProfile(data) {
   try {
     await setDoc(doc(db, 'profiles', auth.currentUser.uid), data);

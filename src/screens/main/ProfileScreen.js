@@ -8,6 +8,7 @@ export default function ProfileScreen() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [loading, setLoading] = useState(false);
+  const [userProfile, setUserProfile] = useState({});
 
   useEffect(() => {
     loadUserProfile();
@@ -19,6 +20,7 @@ export default function ProfileScreen() {
     try {
       const profile = await userProfileService.getUserProfile();
       if (profile) {
+        setUserProfile(profile);
         setFirstName(profile.firstName);
         setLastName(profile.lastName);
       }
@@ -34,6 +36,7 @@ export default function ProfileScreen() {
 
     try {
       await userProfileService.updateUserProfile({
+        ...userProfile,
         firstName: firstName.trim(),
         lastName: lastName.trim()
       });
