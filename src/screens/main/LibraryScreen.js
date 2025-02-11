@@ -1,7 +1,6 @@
 import React from 'react';
-import { ActivityIndicator, View, StyleSheet, Alert, FlatList } from 'react-native';
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Card } from '@rneui/themed';
+import { ActivityIndicator, View, StyleSheet, Alert } from 'react-native';
+import { BookList } from '../../components/BookList';
 import { useBooksData } from '../../hooks/useBooksData';
 import { useUserProfile } from "../../hooks/useUserProfile";
 import * as userProfileService from "../../services/userProfileService";
@@ -30,37 +29,14 @@ export default function LibraryScreen() {
     }
   }
 
-  function isFavorite(bookId) {
-    return userProfile ? userProfile.favorites?.some(x => x === bookId) : false;
-  }
-
-  const renderItem = ({item}) => {
-    return (
-      <Card containerStyle={styles.card}>
-        <Card.Title>{item.title}</Card.Title>
-        <Card.Image
-          style={styles.cardImage}
-          source={{uri: item.imageLinks.thumbnail}}/>
-        <View style={styles.cardFooter}>
-          { isFavorite(item.id)
-            ? <Icon name='bookmark' size={20} onPress={() => toggleFavoriteBook(item.id)}/>
-            : <Icon name='bookmark-o' size={20} onPress={() => toggleFavoriteBook(item.id)}/>
-          }     
-        </View>
-      </Card>
-    );
-  };
+  const userProfileFavorites = userProfile?.favorites || [];
 
   return (
     <View style={styles.container}>
-      <FlatList
-        numColumns={2}
-        horizontal={false}
-        style={styles.booksContainer}
-        columnWrapperStyle={styles.row}
-        data={books}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}/>
+      <BookList 
+        books={books}
+        favorites={userProfileFavorites}
+        toggleFavoriteBook={toggleFavoriteBook}/>
     </View>
   );
 }
@@ -73,32 +49,4 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center'
   },
-  booksContainer: {
-    paddingTop: 8,
-  },
-  row: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginHorizontal: 16,
-    paddingBottom: 16
-  },
-  card: {
-    maxWidth: '48%',
-    flexGrow: 1,
-    flexShrink: 0,
-    flexBasis: 'auto',
-    margin: 0,
-    borderRadius: 8
-  },
-  cardImage: {
-    resizeMode: 'stretch',
-  },
-  cardFooter: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 12
-  }
 });
