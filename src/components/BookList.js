@@ -3,13 +3,14 @@ import { View, StyleSheet, FlatList } from 'react-native';
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Card } from '@rneui/themed';
 
-export function BookList({books, favorites, toggleFavoriteBook}) {
+export function BookList({books, favorites, toggleFavoriteBook, onBookSelected}) {
   const renderItem = ({item}) => {
     return (
       <Card containerStyle={styles.card}>
         <Card.Title>{item.title}</Card.Title>
         <Card.Image
           style={styles.cardImage}
+          onPress={() => onBookSelected && onBookSelected(item)}
           source={{uri: item.imageLinks.thumbnail}}/>
         <View style={styles.cardFooter}>
           { favorites?.some(x => x === item.id)
