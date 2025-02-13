@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, View, StyleSheet, Alert } from 'react-native';
 import { BookList } from '../../components/BookList';
 import { useBooksData } from '../../hooks/useBooksData';
 import { useUserProfile } from "../../hooks/useUserProfile";
 import * as userProfileService from "../../services/userProfileService";
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AirbnbRating, Button, Input, Text } from '@rneui/themed';
 
 export default function LibraryScreen() {
+  const [currentBook, setCurrentBook] = useState(null);
+
+  const [comment, setComment] = useState('');
+  const [rating, setRating] = useState('');
+
   const {apiError, loading, books} = useBooksData("");
   const {userProfile} = useUserProfile();
+
+  const snapPoints = useMemo(() => ['50%', '75%'], []);
+  const bottomSheetRef = useRef(null);
 
   if (loading) {
     return (
@@ -29,15 +40,78 @@ export default function LibraryScreen() {
     }
   }
 
+  function handleBookSelection(book) {
+    setCurrentBook(book);
+
+    const bookRating = userProfile.bookRatings?.find(r => r.bookId === book.id);
+    if (bookRating) {
+      setComment(bookRating.comment);
+      setRating(bookRating.rating);
+    } else {
+      setComment('');
+      setRating(0);
+    }
+
+    bottomSheetRef.current?.snapToIndex(1);
+  }
+
+  async function deleteUserReview() {
+    bottomSheetRef.current?.close();
+
+    try {
+      await userProfileService.deleteBookReview(userProfile, currentBook.id);
+    } catch (error) {
+      Alert.alert("Libreria", error.message);
+    }
+  }
+
+  async function saveUserReview() {
+    bottomSheetRef.current?.close();
+
+    try {
+      await userProfileService.saveBookReview(userProfile, rating, comment, currentBook.id);
+    } catch (error) {
+      Alert.alert("Libreria", error.message);
+    }
+  }
+
   const userProfileFavorites = userProfile?.favorites || [];
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <BookList 
         books={books}
         favorites={userProfileFavorites}
-        toggleFavoriteBook={toggleFavoriteBook}/>
-    </View>
+        toggleFavoriteBook={toggleFavoriteBook}
+        onBookSelected={handleBookSelection}/>
+      <BottomSheet
+        ref={bottomSheetRef} 
+        snapPoints={snapPoints} 
+        index={-1}
+        enablePanDownToClose={true}>
+        <BottomSheetView style={styles.bottomSheetContainer}>
+          <Text h4 style={styles.bottomSheetTitle}>{currentBook?.title}</Text>
+          <AirbnbRating 
+            defaultRating={rating} 
+            showRating={false} 
+            onFinishRating={(value) => setRating(value)}/>
+          <Input
+            placeholder='Escribe un comentario'
+            value={comment}
+            onChangeText={setComment}
+            style={styles.bottomSheetComment}/>
+          <Button
+            title='Guardar'
+            onPress={saveUserReview}
+            style={styles.bottomSheetAction}/>
+          <Button
+            title='Eliminar Reseña'
+            type='clear'
+            onPress={deleteUserReview}
+            style={styles.bottomSheetAction}/>
+        </BottomSheetView>
+      </BottomSheet>
+    </GestureHandlerRootView>
   );
 }
 
@@ -49,4 +123,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center'
   },
+  bottomSheetContainer: {
+    padding: 16,
+  },
+  bottomSheetTitle: {
+    textAlign: 'center',
+    marginBottom: 16
+  },
+  bottomSheetComment: {
+    marginTop: 8,
+  },
+  bottomSheetAction: {
+    marginTop: 8,
+  }
 });
