@@ -6,7 +6,8 @@ import { useUserProfile } from "../../hooks/useUserProfile";
 import * as userProfileService from "../../services/userProfileService";
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { AirbnbRating, Button, Input, Text } from '@rneui/themed';
+import { Button, Input, Text } from '@rneui/themed';
+import StarRating from 'react-native-star-rating-widget';
 
 export default function LibraryScreen() {
   const [currentBook, setCurrentBook] = useState(null);
@@ -91,10 +92,10 @@ export default function LibraryScreen() {
         enablePanDownToClose={true}>
         <BottomSheetView style={styles.bottomSheetContainer}>
           <Text h4 style={styles.bottomSheetTitle}>{currentBook?.title}</Text>
-          <AirbnbRating 
-            defaultRating={rating} 
-            showRating={false} 
-            onFinishRating={(value) => setRating(value)}/>
+          <StarRating 
+            rating={rating} 
+            onChange={setRating}
+            style={styles.bottomSheetRating}/>
           <Input
             placeholder='Escribe un comentario'
             value={comment}
@@ -135,5 +136,8 @@ const styles = StyleSheet.create({
   },
   bottomSheetAction: {
     marginTop: 8,
+  },
+  bottomSheetRating: {
+    alignSelf: 'center'
   }
 });
