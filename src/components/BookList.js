@@ -6,7 +6,7 @@ import { Card } from '@rneui/themed';
 export function BookList({books, favorites, toggleFavoriteBook, onBookSelected}) {
   const renderItem = ({item}) => {
     return (
-      <Card containerStyle={styles.card}>
+      <Card key={item.id} containerStyle={styles.card}>
         <Card.Title>{item.title}</Card.Title>
         <Card.Image
           style={styles.cardImage}
