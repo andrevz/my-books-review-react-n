@@ -16,7 +16,7 @@ export function BookRating({
 }) {
   const snapPoints = useMemo(() => ["50%", "75%"], []);
 
-  retrun(
+  return (
     <BottomSheet
       enablePanDownToClose={true}
       index={-1}
