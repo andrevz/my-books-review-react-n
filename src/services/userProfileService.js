@@ -16,13 +16,13 @@ export async function getUserProfile() {
   return userProfile;
 }
 
-export async function toggleUserProfileFavoriteBook(userProfile, bookId) {
+export async function toggleUserProfileFavoriteBook(userProfile, book) {
   let favorites = userProfile.favorites || [];
 
-  if (favorites.some(x => x === bookId))
-    favorites = favorites.filter(x => x !== bookId);
+  if (favorites.some(x => x.id === book.id))
+    favorites = favorites.filter(x => x.id !== book.id);
   else
-    favorites.push(bookId);
+    favorites.push({ id: book.id, title: book.title, thumbnail: book.imageLinks.thumbnail });
 
   updateUserProfile({
     ...userProfile,

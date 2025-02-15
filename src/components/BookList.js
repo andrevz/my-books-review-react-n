@@ -11,11 +11,11 @@ export function BookList({books, favorites, toggleFavoriteBook, onBookSelected})
         <Card.Image
           style={styles.cardImage}
           onPress={() => onBookSelected && onBookSelected(item)}
-          source={{uri: item.imageLinks.thumbnail}}/>
+          source={{uri: item.thumbnail || item.imageLinks.thumbnail}}/>
         <View style={styles.cardFooter}>
-          { favorites?.some(x => x === item.id)
-            ? <Icon name='bookmark' size={24} onPress={() => toggleFavoriteBook(item.id)}/>
-            : <Icon name='bookmark-o' size={24} onPress={() => toggleFavoriteBook(item.id)}/>
+          { favorites?.some(x => x.id === item.id)
+            ? <Icon name='bookmark' size={28} onPress={() => toggleFavoriteBook(item)}/>
+            : <Icon name='bookmark-o' size={28} onPress={() => toggleFavoriteBook(item)}/>
           }     
         </View>
       </Card>

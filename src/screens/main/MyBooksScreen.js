@@ -1,32 +1,27 @@
 import React, { useState, useRef } from 'react';
-import { ActivityIndicator, View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { BookList } from '../../components/BookList';
-import { useBooksData } from '../../hooks/useBooksData';
 import { useUserProfile } from "../../hooks/useUserProfile";
 import * as userProfileService from "../../services/userProfileService";
 import { BookRating } from '../../components/BookRating';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Text } from '@rneui/themed';
 
 export default function MyBooksScreen() {
   const [currentBook, setCurrentBook] = useState(null);
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState('');
 
-  const {apiError, loading, books} = useBooksData("");
   const {userProfile} = useUserProfile();
 
     const bottomSheetRef = useRef(null);
 
-  if (loading) {
+  if (!userProfile?.favorites?.length) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
+        <Text h4 style={styles.emptyText}>Tu librería esta vacia</Text>
       </View>
     );
-  }
-
-  if (apiError) {
-    Alert.alert("Libreria", apiError);
   }
 
   async function toggleFavoriteBook(bookId) {
@@ -73,12 +68,11 @@ export default function MyBooksScreen() {
   }
 
   const userProfileFavorites = userProfile?.favorites || [];
-  const favoriteBooks = books.filter(x => userProfileFavorites?.some(f => f === x.id));
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <BookList 
-        books={favoriteBooks}
+        books={userProfileFavorites}
         favorites={userProfileFavorites}
         toggleFavoriteBook={toggleFavoriteBook}
         onBookSelected={handleBookSelection}
@@ -105,4 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center'
   },
+  emptyText: {
+    textAlign: 'center'
+  }
 });

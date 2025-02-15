@@ -29,9 +29,9 @@ export default function LibraryScreen() {
     Alert.alert("Libreria", apiError);
   }
 
-  async function toggleFavoriteBook(bookId) {
+  async function toggleFavoriteBook(book) {
     try {
-      await userProfileService.toggleUserProfileFavoriteBook(userProfile, bookId);
+      await userProfileService.toggleUserProfileFavoriteBook(userProfile, book);
     } catch (error) {
       Alert.alert("Libreria", error.message);
     }
