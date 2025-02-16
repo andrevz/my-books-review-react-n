@@ -6,16 +6,28 @@ import { useUserProfile } from "../../hooks/useUserProfile";
 import * as userProfileService from "../../services/userProfileService";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BookRating } from '../../components/BookRating';
+import { SearchBar } from '@rneui/themed';
+import { useEffect } from 'react';
 
 export default function LibraryScreen() {
   const [currentBook, setCurrentBook] = useState(null);
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState('');
+  const [search, setSearch] = useState('');
+  const [query, setQuery] = useState('');
 
-  const {apiError, loading, books} = useBooksData("");
+  const {apiError, loading, books, loadAllBooks, searchBooks} = useBooksData();
   const {userProfile} = useUserProfile();
 
   const bottomSheetRef = useRef(null);
+
+  useEffect(() => {
+    if (!query) {
+      loadAllBooks();
+    } else {
+      searchBooks(query);
+    }
+  }, [query])
 
   if (loading) {
     return (
@@ -76,6 +88,12 @@ export default function LibraryScreen() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
+      <SearchBar
+        lightTheme={true}
+        value={search}
+        onChangeText={setSearch}
+        onEndEditing={() => setQuery(search)}
+        onClear={() => setQuery('')}/>
       <BookList 
         books={books}
         favorites={userProfileFavorites}
