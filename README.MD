@@ -133,8 +133,15 @@ Para completar el proyecto, deberás implementar:
 
 Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detalles
 
-## 🎉 Éxito en tu Desarrollo!
+## Capturas
 
-Recuerda que este es un proyecto base que puedes personalizar y expandir según tus necesidades. ¡Diviértete construyendo!
-```
+<div style="display:inline-flex;gap:10px">
+  <img src="./screenshots/libreria.png" width="250"/>
+  <img src="./screenshots/mis_libros.png" width="250"/>
+  <img src="./screenshots/mi_perfil.png" width="250"/> 
+</div>
 
+<div style="display:inline-flex;gap:10px">
+  <img src="./screenshots/busqueda.png" width="250"/>
+  <img src="./screenshots/comentario.png" width="250"/>
+</div>
